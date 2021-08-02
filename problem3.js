@@ -12,20 +12,14 @@
  * @return {object}
  */
 const run = async (numConcurrentTasks, getTask) => {
-  // TO DO: Implement this function to process tasks concurrently
-  // For example, if there are 10 tasks in total and there should be 3 concurrently tasks:
-  // - At the first step: the task 1, 2, 3 must start immediately.
-  // - If any task is done, the next task musts start immediately.
-  // - After the last task starts, there must be no more queueing up.
-  let waitGroup = 1;
+  let waitGroup = 0;
 
-  const jobInEventQueue = setInterval(waitForTasks);
+  const jobInCallbackQueue = setInterval(waitForTasks);
 
   const startATask = async () => {
     const executableTask = getTask();
     if (!executableTask) {
-      waitGroup = -1;
-      clearInterval(jobInEventQueue);
+      clearInterval(jobInCallbackQueue);
       return;
     }
     waitGroup++;
@@ -33,8 +27,8 @@ const run = async (numConcurrentTasks, getTask) => {
     waitGroup--;
   };
 
-  async function waitForTasks() {
-    if (waitGroup < numConcurrentTasks + 1) {
+  function waitForTasks() {
+    if (waitGroup < numConcurrentTasks) {
       startATask();
     }
   }
