@@ -19,13 +19,13 @@ const run = async (numConcurrentTasks, getTask) => {
   // - After the last task starts, there must be no more queueing up.
   let waitGroup = 1;
 
-  const eventLoop = setInterval(waitForTasks);
+  const jobInEventQueue = setInterval(waitForTasks);
 
   const startATask = async () => {
     const executableTask = getTask();
     if (!executableTask) {
       waitGroup = -1;
-      clearInterval(eventLoop);
+      clearInterval(jobInEventQueue);
       return;
     }
     waitGroup++;
